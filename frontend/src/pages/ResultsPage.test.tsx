@@ -12,7 +12,7 @@ describe('ResultsPage', () => {
         summary={{
           session_id: 's1',
           score: { correct: 1, total: 2 },
-          by_topic: [{ topic: 'Machine Learning', correct: 1, total: 2 }],
+          by_topic: [{ topic: 'Machine Learning technical concepts', correct: 1, total: 2 }],
           created_at: '2026-02-19T00:00:00Z',
           completed_at: '2026-02-19T00:03:00Z',
         }}
@@ -20,7 +20,7 @@ describe('ResultsPage', () => {
           session_id: 's1',
           created_at: '2026-02-19T00:00:00Z',
           config: {
-            topics: ['Machine Learning'],
+            topics: ['Machine Learning technical concepts'],
             difficulty: 'easy',
             question_type: 'mixed',
             num_questions: 1,
@@ -30,7 +30,7 @@ describe('ResultsPage', () => {
               id: 'q1',
               order_index: 1,
               type: 'mcq',
-              topic_tags: ['Machine Learning'],
+              topic_tags: ['Machine Learning technical concepts'],
               difficulty: 'easy',
               prompt: 'Pick one',
               options: ['A', 'B', 'C', 'D'],

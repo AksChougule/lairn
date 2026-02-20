@@ -1,4 +1,5 @@
 import type { CreateQuizSessionResponse, SessionSummaryResponse, SubmitAnswerRequest, SubmitAnswerResponse } from '../types/api'
+import { getTopicLabel } from '../constants/topics'
 
 type AnswerRecord = {
   request: SubmitAnswerRequest
@@ -73,7 +74,7 @@ export function ResultsPage({ summary, session, answers, isLoading, error, onRes
       <ul className="topic-summary">
         {summary.by_topic.map((item) => (
           <li key={item.topic}>
-            <span>{item.topic}</span>
+            <span>{getTopicLabel(item.topic)}</span>
             <strong>
               {item.correct}/{item.total}
             </strong>

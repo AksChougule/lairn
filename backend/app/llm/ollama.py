@@ -43,11 +43,26 @@ class OllamaClient:
                 response.raise_for_status()
                 payload: dict[str, Any] = response.json()
                 raw_response = payload.get("response", "{}")
-                parsed = json.loads(raw_response)
+                parsed = self._parse_json_response(raw_response)
                 return response_model.model_validate(parsed)
-            except (httpx.HTTPError, json.JSONDecodeError, ValidationError):
+            except (httpx.HTTPError, json.JSONDecodeError, ValidationError, ValueError):
                 continue
         return None
+
+    @staticmethod
+    def _parse_json_response(raw_response: Any) -> Any:
+        if isinstance(raw_response, (dict, list)):
+            return raw_response
+        text = str(raw_response).strip()
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            start = text.find("{")
+            end = text.rfind("}")
+            if start == -1 or end == -1 or end <= start:
+                raise
+            candidate = text[start : end + 1]
+            return json.loads(candidate)
 
 
 ollama_client = OllamaClient()

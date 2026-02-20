@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { topicOptions } from '../constants/topics'
 import type { CreateQuizSessionRequest, Difficulty, QuestionType, Topic } from '../types/api'
 
 type SetupPageProps = {
@@ -7,20 +8,11 @@ type SetupPageProps = {
   error: string | null
 }
 
-const TOPICS: Topic[] = [
-  'Machine Learning',
-  'Deep Learning',
-  'Statistics',
-  'Generative AI',
-  'MLOps',
-  'Agentic AI',
-]
-
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
 const QUESTION_TYPES: QuestionType[] = ['mcq', 'short-answer', 'mixed']
 
 export function SetupPage({ onStart, isStarting, error }: SetupPageProps) {
-  const [selectedTopics, setSelectedTopics] = useState<Topic[]>(['Machine Learning'])
+  const [selectedTopics, setSelectedTopics] = useState<Topic[]>(['Machine Learning technical concepts'])
   const [difficulty, setDifficulty] = useState<Difficulty>('medium')
   const [questionType, setQuestionType] = useState<QuestionType>('mixed')
   const [numQuestions, setNumQuestions] = useState<number>(5)
@@ -52,14 +44,14 @@ export function SetupPage({ onStart, isStarting, error }: SetupPageProps) {
         <fieldset>
           <legend>Topics</legend>
           <div className="topic-grid">
-            {TOPICS.map((topic) => (
-              <label key={topic} className="checkbox-card">
+            {topicOptions.map((topic) => (
+              <label key={topic.value} className="checkbox-card">
                 <input
                   type="checkbox"
-                  checked={selectedTopics.includes(topic)}
-                  onChange={() => toggleTopic(topic)}
+                  checked={selectedTopics.includes(topic.value)}
+                  onChange={() => toggleTopic(topic.value)}
                 />
-                <span>{topic}</span>
+                <span>{topic.label}</span>
               </label>
             ))}
           </div>

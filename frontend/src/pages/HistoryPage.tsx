@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getSessionSummary, listSessions } from '../api/quiz'
+import { getTopicLabel } from '../constants/topics'
 
 export function HistoryPage() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
@@ -54,7 +55,7 @@ export function HistoryPage() {
           <ul>
             {summaryQuery.data.by_topic.map((topic) => (
               <li key={topic.topic}>
-                {topic.topic}: {topic.correct}/{topic.total}
+                {getTopicLabel(topic.topic)}: {topic.correct}/{topic.total}
               </li>
             ))}
           </ul>

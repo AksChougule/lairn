@@ -4,12 +4,14 @@ from pydantic import BaseModel, Field
 
 
 class Topic(str, Enum):
-    machine_learning = "Machine Learning"
-    deep_learning = "Deep Learning"
+    machine_learning = "Machine Learning technical concepts"
+    deep_learning = "Deep Learning technical concepts"
     statistics = "Statistics"
     generative_ai = "Generative AI"
-    mlops = "MLOps"
-    agentic_ai = "Agentic AI"
+    mlops = "MLOps technical concepts"
+    agentic_ai = "Agentic AI technical concepts"
+    api_technical_concepts = "API technical concepts"
+    llm_foundational_model_concepts = "LLM and Foundational Model concepts"
 
 
 class Difficulty(str, Enum):

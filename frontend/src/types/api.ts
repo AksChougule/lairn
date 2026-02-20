@@ -1,10 +1,12 @@
 export type Topic =
-  | 'Machine Learning'
-  | 'Deep Learning'
+  | 'Machine Learning technical concepts'
+  | 'Deep Learning technical concepts'
   | 'Statistics'
   | 'Generative AI'
-  | 'MLOps'
-  | 'Agentic AI'
+  | 'MLOps technical concepts'
+  | 'Agentic AI technical concepts'
+  | 'API technical concepts'
+  | 'LLM and Foundational Model concepts'
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
 export type QuestionType = 'mcq' | 'short-answer' | 'mixed'

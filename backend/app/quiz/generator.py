@@ -106,7 +106,7 @@ TOPIC_BANK: dict[Topic, dict[str, dict[str, object]]] = {
     },
     Topic.mlops: {
         "mcq": {
-            "prompt": "What is the main purpose of model versioning in MLOps?",
+            "prompt": "What is the main purpose of model versioning in MLOps workflows?",
             "options": ["Reduce model size", "Track and reproduce model changes", "Increase training speed", "Avoid data labeling"],
             "correct_option_index": 1,
             "explanation": "Versioning tracks model artifacts, code, and metadata so teams can reproduce and audit model behavior.",
@@ -132,6 +132,36 @@ TOPIC_BANK: dict[Topic, dict[str, dict[str, object]]] = {
             "acceptable_variants": ["reason-act-observe loop", "iterative planning with feedback"],
             "grading_rubric": "Must describe iterative planning and feedback from observations.",
             "explanation": "Agentic systems often operate iteratively: they plan steps, execute actions, observe outcomes, and adapt the plan.",
+        },
+    },
+    Topic.api_technical_concepts: {
+        "mcq": {
+            "prompt": "Which HTTP method is typically used for idempotent partial updates?",
+            "options": ["GET", "POST", "PATCH", "CONNECT"],
+            "correct_option_index": 2,
+            "explanation": "PATCH applies partial updates to a resource representation. GET retrieves data and POST is generally non-idempotent for creation.",
+        },
+        "short-answer": {
+            "prompt": "What does a 429 HTTP status code indicate?",
+            "expected_answer": "Too many requests; the client has been rate limited.",
+            "acceptable_variants": ["rate limit exceeded", "request throttled by server"],
+            "grading_rubric": "Must mention rate limiting or request throttling.",
+            "explanation": "HTTP 429 signals that the client sent too many requests in a given window. Clients should back off and retry according to policy.",
+        },
+    },
+    Topic.llm_foundational_model_concepts: {
+        "mcq": {
+            "prompt": "What is the main function of tokenization in LLM pipelines?",
+            "options": ["Encrypt user input", "Convert text into model-processable token IDs", "Reduce GPU memory to zero", "Guarantee factual outputs"],
+            "correct_option_index": 1,
+            "explanation": "Tokenization maps text into discrete IDs the model understands. It is a preprocessing step before embedding and transformer computation.",
+        },
+        "short-answer": {
+            "prompt": "What is context window in a foundational language model?",
+            "expected_answer": "The maximum amount of tokenized input the model can attend to in one inference.",
+            "acceptable_variants": ["max tokens the model can process at once", "attention span limit in tokens"],
+            "grading_rubric": "Must mention a token limit for single-pass model attention/input.",
+            "explanation": "A context window defines how many tokens the model can use at inference time. Inputs beyond that window are truncated or handled with other strategies.",
         },
     },
 }
@@ -175,7 +205,7 @@ def _build_llm_prompt(
         "Generate quiz questions as strict JSON only.\n"
         "Output schema: {\"questions\": [{"
         "\"type\": \"mcq|short-answer\", "
-        "\"topic_tags\": [\"Machine Learning|Deep Learning|Statistics|Generative AI|MLOps|Agentic AI\"], "
+        "\"topic_tags\": [\"Machine Learning technical concepts|Deep Learning technical concepts|Statistics|Generative AI|MLOps technical concepts|Agentic AI technical concepts|API technical concepts|LLM and Foundational Model concepts\"], "
         "\"difficulty\": \"easy|medium|hard\", "
         "\"prompt\": \"string\", "
         "\"options\": [\"a\",\"b\",\"c\",\"d\"] or null, "

@@ -120,10 +120,23 @@ fieldset {
 .checkbox-card {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: flex-start;
+  gap: 0.6rem;
   padding: 0.4rem;
   border-radius: 8px;
   border: 1px solid var(--line);
+  text-align: left;
+}
+
+.checkbox-card input[type='checkbox'] {
+  width: auto;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.checkbox-card span {
+  flex: 1;
+  text-align: left;
 }
 
 label,

@@ -4,7 +4,7 @@ const sessionResponse = {
   session_id: 'session-e2e-1',
   created_at: '2026-02-19T00:00:00Z',
   config: {
-    topics: ['Machine Learning'],
+    topics: ['Machine Learning technical concepts'],
     difficulty: 'medium',
     question_type: 'mcq',
     num_questions: 1,
@@ -14,7 +14,7 @@ const sessionResponse = {
       id: 'q1',
       order_index: 1,
       type: 'mcq',
-      topic_tags: ['Machine Learning'],
+      topic_tags: ['Machine Learning technical concepts'],
       difficulty: 'medium',
       prompt: 'What is overfitting?',
       options: ['Good generalization', 'Memorization', 'Deployment', 'Logging'],
@@ -45,7 +45,7 @@ test.beforeEach(async ({ page }) => {
             completed_at: '2026-02-19T00:05:00Z',
             score: { correct: 1, total: 1 },
             config: {
-              topics: ['Machine Learning'],
+              topics: ['Machine Learning technical concepts'],
               difficulty: 'medium',
               question_type: 'mcq',
               num_questions: 1,
@@ -63,7 +63,7 @@ test.beforeEach(async ({ page }) => {
       body: JSON.stringify({
         session_id: 'session-e2e-1',
         score: { correct: 1, total: 1 },
-        by_topic: [{ topic: 'Machine Learning', correct: 1, total: 1 }],
+        by_topic: [{ topic: 'Machine Learning technical concepts', correct: 1, total: 1 }],
         created_at: '2026-02-19T00:00:00Z',
         completed_at: '2026-02-19T00:05:00Z',
       }),
