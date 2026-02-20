@@ -30,7 +30,7 @@ class CreateQuizSessionRequest(BaseModel):
     topics: list[Topic] = Field(min_length=1)
     difficulty: Difficulty
     question_type: QuestionType
-    num_questions: int = Field(ge=1, le=50)
+    num_questions: int = Field(ge=1, le=15)
 
 
 class QuizQuestionPublic(BaseModel):

@@ -84,7 +84,7 @@ export function SetupPage({ onStart, isStarting, error }: SetupPageProps) {
           <input
             type="number"
             min={1}
-            max={50}
+            max={15}
             value={numQuestions}
             onChange={(event) => setNumQuestions(Number(event.target.value))}
           />

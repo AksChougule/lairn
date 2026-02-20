@@ -12,5 +12,6 @@ describe('Setup page', () => {
     expect(html).toContain('Start Quiz')
     expect(html).toContain('Number of Questions')
     expect(html).toContain('Question Type')
+    expect(html).toContain('max="15"')
   })
 })

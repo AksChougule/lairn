@@ -223,6 +223,106 @@ def _build_llm_prompt(
     )
 
 
+def _normalize_prompt(value: str) -> str:
+    return " ".join(value.lower().strip().split())
+
+
+def _with_prompt(question: GeneratedQuestion, prompt: str) -> GeneratedQuestion:
+    return GeneratedQuestion(
+        type=question.type,
+        topic_tags=question.topic_tags,
+        difficulty=question.difficulty,
+        prompt=prompt,
+        options=question.options,
+        correct_option_index=question.correct_option_index,
+        expected_answer=question.expected_answer,
+        acceptable_variants=question.acceptable_variants,
+        grading_rubric=question.grading_rubric,
+        explanation=question.explanation,
+    )
+
+
+def _regenerate_duplicate_question(
+    *,
+    original: GeneratedQuestion,
+    used_prompts: set[str],
+) -> GeneratedQuestion | None:
+    allowed_topics = "|".join(topic.value for topic in Topic)
+    prompt = (
+        "Generate exactly one quiz question as strict JSON only.\n"
+        "Output schema: {\"questions\": [{"
+        "\"type\": \"mcq|short-answer\", "
+        f"\"topic_tags\": [\"{allowed_topics}\"], "
+        "\"difficulty\": \"easy|medium|hard\", "
+        "\"prompt\": \"string\", "
+        "\"options\": [\"a\",\"b\",\"c\",\"d\"] or null, "
+        "\"correct_option_index\": 0..3 or null, "
+        "\"expected_answer\": \"string\" or null, "
+        "\"acceptable_variants\": [\"string\"] or null, "
+        "\"grading_rubric\": \"string\" or null, "
+        "\"explanation\": \"2-6 sentence explanation\""
+        "}]}.\n"
+        f"Required type: {original.type.value}\n"
+        f"Required difficulty: {original.difficulty.value}\n"
+        f"Required topic tag: {original.topic_tags[0].value}\n"
+        f"Avoid prompts matching any of these normalized prompts: {sorted(used_prompts)}\n"
+    )
+    response = ollama_client.generate_json(prompt=prompt, response_model=LLMGeneratedQuestions, max_retries=2)
+    if not response or len(response.questions) != 1:
+        return None
+
+    candidate = response.questions[0]
+    if not _is_valid_generated_question(candidate):
+        return None
+    if candidate.type != original.type:
+        return None
+    if original.topic_tags[0] not in candidate.topic_tags:
+        return None
+    if _normalize_prompt(candidate.prompt) in used_prompts:
+        return None
+
+    return GeneratedQuestion(
+        type=candidate.type,
+        topic_tags=candidate.topic_tags,
+        difficulty=candidate.difficulty,
+        prompt=candidate.prompt,
+        options=candidate.options,
+        correct_option_index=candidate.correct_option_index,
+        expected_answer=candidate.expected_answer,
+        acceptable_variants=candidate.acceptable_variants,
+        grading_rubric=candidate.grading_rubric,
+        explanation=candidate.explanation,
+    )
+
+
+def _deduplicate_questions(questions: list[GeneratedQuestion]) -> list[GeneratedQuestion]:
+    deduplicated: list[GeneratedQuestion] = []
+    used_prompts: set[str] = set()
+
+    for question in questions:
+        candidate = question
+        attempts = 0
+        while _normalize_prompt(candidate.prompt) in used_prompts and attempts < 3:
+            regenerated = _regenerate_duplicate_question(original=candidate, used_prompts=used_prompts)
+            if regenerated is None:
+                break
+            candidate = regenerated
+            attempts += 1
+
+        normalized_candidate_prompt = _normalize_prompt(candidate.prompt)
+        if normalized_candidate_prompt in used_prompts:
+            variant_number = 2
+            while _normalize_prompt(f"{candidate.prompt} (variation {variant_number})") in used_prompts:
+                variant_number += 1
+            candidate = _with_prompt(candidate, f"{candidate.prompt} (variation {variant_number})")
+            normalized_candidate_prompt = _normalize_prompt(candidate.prompt)
+
+        deduplicated.append(candidate)
+        used_prompts.add(normalized_candidate_prompt)
+
+    return deduplicated
+
+
 def _fallback_questions(
     *,
     topics: list[Topic],
@@ -266,21 +366,25 @@ def generate_questions(
     )
     llm_response = ollama_client.generate_json(prompt=prompt, response_model=LLMGeneratedQuestions, max_retries=2)
     if not llm_response or len(llm_response.questions) != num_questions:
-        return _fallback_questions(
-            topics=topics,
-            difficulty=difficulty,
-            question_type=question_type,
-            num_questions=num_questions,
+        return _deduplicate_questions(
+            _fallback_questions(
+                topics=topics,
+                difficulty=difficulty,
+                question_type=question_type,
+                num_questions=num_questions,
+            )
         )
 
     generated: list[GeneratedQuestion] = []
     for question in llm_response.questions:
         if not _is_valid_generated_question(question):
-            return _fallback_questions(
-                topics=topics,
-                difficulty=difficulty,
-                question_type=question_type,
-                num_questions=num_questions,
+            return _deduplicate_questions(
+                _fallback_questions(
+                    topics=topics,
+                    difficulty=difficulty,
+                    question_type=question_type,
+                    num_questions=num_questions,
+                )
             )
         generated.append(
             GeneratedQuestion(
@@ -297,4 +401,4 @@ def generate_questions(
             )
         )
 
-    return generated
+    return _deduplicate_questions(generated)
