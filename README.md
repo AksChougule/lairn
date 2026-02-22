@@ -199,3 +199,14 @@ lairn/
 - `GET /api/v1/quiz/sessions/{session_id}/summary`
 - `GET /api/v1/quiz/sessions`
 - `GET /health`
+
+## Screenshots
+
+<img width="1118" height="928" alt="image" src="https://github.com/user-attachments/assets/97368f58-447a-455e-8ab7-30ec994e279d" />
+
+<img width="1125" height="947" alt="image" src="https://github.com/user-attachments/assets/d48227e4-4adf-431a-9dd7-22a4cbba46cd" />
+
+<img width="1125" height="947" alt="image" src="https://github.com/user-attachments/assets/d8569605-66ca-4a7b-8eca-3cd09e7f2066" />
+
+
+
